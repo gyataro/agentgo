@@ -4,6 +4,7 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const sellRouter = require("./controllers/sell");
+const fileRouter = require("./controllers/file");
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 const config = require("./utils/config");
@@ -21,9 +22,11 @@ mongoose
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(middleware.requestLogger);
 
 app.use("/api/sells", sellRouter);
+app.use("/api/files", fileRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
