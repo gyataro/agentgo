@@ -18,7 +18,7 @@ const errorHandler = (error, request, response, next) => {
   switch (error.name) {
     case "CastError":
       return response.status(400).json({ error: "Malformatted ID." });
-    case "Validation Error":
+    case "ValidationError":
       return response.status(400).json({ error: error.message });
     default:
       next(error);
