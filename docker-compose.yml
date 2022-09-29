@@ -1,0 +1,23 @@
+version: "3"
+services:
+  mongo:
+    image: mongo
+    volumes:
+      - agentgo-db:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+
+  gotenberg:
+    image: gotenberg/gotenberg:7
+    ports:
+      - "4000:3000"
+    command:
+      - "gotenberg"
+      - "--libreoffice-disable-routes=true"
+      - "--pdfengines-disable-routes=true"
+
+volumes:
+  agentgo-db:

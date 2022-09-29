@@ -20,6 +20,8 @@ const errorHandler = (error, request, response, next) => {
       return response.status(400).json({ error: "Malformatted ID." });
     case "ValidationError":
       return response.status(400).json({ error: error.message });
+    case "Error":
+      return response.status(500).json({ error: "Something went wrong." });
     default:
       next(error);
   }

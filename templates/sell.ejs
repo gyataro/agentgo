@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  .fool {
+    display: flex;
+    flex-direction: row;
+  }
+  .test {
+    flex: 0 1 50%;
+  }
+  .test b {
+    display: inline-block;
+    width: 130px;
+    position: relative;
+    padding-right: 10px;
+  }
+  .test b::after {
+    content: ":";
+    position: absolute;
+    right: 10px;
+  }
+  .content {
+    font-size: 0.75em;
+    padding-left: 1cm;
+    padding-right: 1cm;
+    text-align: justify;
+  }
+  ol {
+    list-style-position: outside;
+    padding-left: 1.2em;
+  }
+  li + li {
+    margin-top: 10px;
+  }
+  hr {
+    height: 2px;
+    border: none;
+    color: #333;
+    background-color: #333;
+  }
+</style>
+</head>
+<body>
+  
+<div class="content">
+<h4><u>AGREEMENT TO PURCHASE</u></h4>
+<p>Property Address: <b><%= address %></b></p>
+<p>The Purchaser(s) / Nominee(s) do hereby offer to purchase the above property on an "As Is Where Is Basis" with attached inventory (if any) for the total purchase price of Ringgit Malaysia : <b><%= priceWord %></b> (RM) <b><%= priceDigit %></b> with the terms and conditions of purchase as follows :</p>
+<ol>
+  <li>Ten percent (10%) of the total Purchase Price inclusive of the Earnest Deposit sum shall be paid immediately upon signing the Sale & Purchase Agreement (SPA) by the Purchaser(s).</li>
+  <li>The Balance Sum of ninety percent (90%) shall be paid within 90 days from the date of signing the SPA / Receipt of Consent from Developer and / or Relevant Authorities (whichever is later) with an extension period of thirty (30) days carrying an interest rate of eight percent (8%) per annum.</li>
+  <li>
+    The SPA must be signed by both parties within fifteen (15) full working days from the date of acceptance by the Vendor(s). In default of signing the SPA within the above validity date:
+    <ol type="a">
+      <li>by the Purchaser(s), provided that there is no undue delay on the part of the Vendor(s) or Vendor(s)' Solicitor, the said Earnest Deposit sum paid herewith shall be forfeited by the Vendor(s), which shall be shared equally between the Vendor(s) and Billion Realtors.</li>
+      <li>by the Vendor(s), the Vendor(s) shall refund to the Purchaser(s) free of interest the said Earnest Deposit, together with a compensation sum equivalent to the Earnest Deposit, which will be share equally between Purchaser(s) and Billion Realtors as agreed liquidated damages and thereinafter this Agreement shall be terminated, be null and void thereafter neither party shall have any further claims whatsoever against each other.</li>
+    </ol>
+  </li>
+  <li>The Purchaser(s) shall bear the Stamp duty, Registration Fees and his / her legal fees incurred in the SPA in this transaction. The Vendor(s) shall bear his / her own solicitors fees, the discharge of charge and cost of obtaining the necessary consent from the Relevant Authorities, if any.</li>
+  <li>Handing over to the Purchaser(s) with / without tenancy shall only be executed upon full payment of the total purchase price.</li>
+  <li>This Agreement To Purchase is subject to the acceptance by the Vendor(s) and if or when it is not acceptable, the earnest deposit sum paid herewith shall be refunded in full to the Purchaser(s) without any interest and legal discourse.</li>
+  <li>This offer letter shall constitute a binding contract which shall be superseded only upon the execution of the formal SPA.</li>
+  <li>
+    I / We attached herewith our <b><%= depositType %></b> Ref No.: <b><%= depositRef %></b> for a sum of RM <b><%= deposit %></b> being Earnest Deposit payable to Billion Realtors as stakeholder.
+    <br/><b>[ Note : Billion Realtors will not be responsible for any cash payment without official receipt. All payments shall be crossed "A/C Payee Only" to Billion Realtors. ]</b>
+  </li>
+</ol>
+
+<u><b>PURCHASER(S)</b></u>
+
+<div class="fool">
+  <div class="test">
+    <div><b>Signatures</b></div>
+    <% parties.buyers.forEach(function(buyer, i){ %>
+      <div><b>Name <%= i+1 %></b><%= buyer.name %></div>
+      <div><b>NRIC No. <%= i+1 %></b><%= buyer.identity %></div>
+    <% }); %>
+  </div>
+  <div class="test">
+    <div><b>WITNESSED BY</b></div>
+    <div><b>Name</b><%= parties.agent.name %></div>
+    <div><b>NRIC No.</b><%= parties.agent.identity %></div>
+    <div><b>Date</b></div>
+  </div>
+</div>
+
+<hr/>
+
+<p>I / We registered / beneficial owner(s), HEREBY ACCEPT AND AGREE to the offer as mentioned hereinabove, and to pay Billion Realtors a Professional Fee in accordance to Valuers, Appraisers and Estate Agent Act 1981 (ACT 242) & Rules plus 6% SST as agreed. The Professional Fee is payable and deductable from the Earnest Deposit receive on my / our behalf upon signing of the Sales & Purchase Agreement.</p>
+
+<u><b>ACCEPTED BY THE SAID VENDOR(S)</b></u>
+
+<div class="fool">
+  <div class="test">
+    <div><b>Signatures</b></div>
+    <% parties.sellers.forEach(function(seller, i){ %>
+      <div><b>Name <%= i+1 %></b><%= seller.name %></div>
+      <div><b>NRIC No. <%= i+1 %></b><%= seller.identity %></div>
+    <% }); %>
+  </div>
+  <div class="test">
+    <div><b>WITNESSED BY</b></div>
+    <div><b>Name</b><%= parties.agent.name %></div>
+    <div><b>NRIC No.</b><%= parties.agent.identity %></div>
+    <div><b>Date</b></div>
+  </div>
+</div>
+</div>
+</body>
+</html>

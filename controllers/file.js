@@ -7,7 +7,8 @@ const upload = multer({ storage: storage });
 fileRouter.get("/:id", async (request, response) => {
   const id = request.params.id;
   const result = await File.findById(id);
-  return response.json(result);
+  if (!result) return response.status(404).json({ error: "Not found." });
+  return response.type("application/pdf").send(result.data);
 });
 
 fileRouter.post("/", upload.any(), async (request, response) => {

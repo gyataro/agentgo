@@ -31,7 +31,7 @@ const structure = {
         type: String,
         enum: ["AGENT", "BUYER", "SELLER"],
       },
-      id: String,
+      identity: String,
       email: String,
       mobile: String,
       address: String,
@@ -40,6 +40,7 @@ const structure = {
     },
   ],
   agreement: {
+    fileId: String,
     price: Number,
     deposit: Number,
     depositRef: String,
@@ -50,6 +51,7 @@ const structure = {
     conditions: [String],
   },
   authorization: {
+    fileId: String,
     price: Number,
     period: Number,
     conditions: [String],
