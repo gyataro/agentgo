@@ -2,7 +2,11 @@
 <html>
 <head>
 <style>
-  .fool {
+  .buyer-area {
+    display: flex;
+    flex-direction: row;
+  }
+  .seller-area {
     display: flex;
     flex-direction: row;
   }
@@ -30,7 +34,7 @@
     list-style-position: outside;
     padding-left: 1.2em;
   }
-  li + li {
+  li {
     margin-top: 10px;
   }
   hr {
@@ -38,6 +42,14 @@
     border: none;
     color: #333;
     background-color: #333;
+  }
+  .sign-parent {
+    display: flex;
+    align-items: flex-end;
+  }
+  svg {
+    width: 60px;
+    height: 60px;
   }
 </style>
 </head>
@@ -62,23 +74,32 @@
   <li>This Agreement To Purchase is subject to the acceptance by the Vendor(s) and if or when it is not acceptable, the earnest deposit sum paid herewith shall be refunded in full to the Purchaser(s) without any interest and legal discourse.</li>
   <li>This offer letter shall constitute a binding contract which shall be superseded only upon the execution of the formal SPA.</li>
   <li>
-    I / We attached herewith our <b><%= depositType %></b> Ref No.: <b><%= depositRef %></b> for a sum of RM <b><%= deposit %></b> being Earnest Deposit payable to Billion Realtors as stakeholder.
+    I / We attached herewith our <b><%= depositType %></b> <% if(depositRef){ %> <b>(Ref No.: <%= depositRef %>)</b> <% } %> for a sum of RM <b><%= deposit %></b> being Earnest Deposit payable to Billion Realtors as stakeholder.
     <br/><b>[ Note : Billion Realtors will not be responsible for any cash payment without official receipt. All payments shall be crossed "A/C Payee Only" to Billion Realtors. ]</b>
   </li>
+  <li>OTHER CONDITIONS: <%= condition %></li>
 </ol>
 
 <u><b>PURCHASER(S)</b></u>
 
-<div class="fool">
+<div class="buyer-area">
   <div class="test">
-    <div><b>Signatures</b></div>
+    <div class="sign-parent">
+      <b>Signatures</b>
+      <% parties.buyers.forEach(function(buyer, i){ %>
+        <%- buyer.agreementSignature %>
+      <% }); %>
+    </div>
     <% parties.buyers.forEach(function(buyer, i){ %>
       <div><b>Name <%= i+1 %></b><%= buyer.name %></div>
       <div><b>NRIC No. <%= i+1 %></b><%= buyer.identity %></div>
     <% }); %>
   </div>
   <div class="test">
-    <div><b>WITNESSED BY</b></div>
+    <div class="sign-parent">
+      <b>WITNESSED BY</b>
+      <%- parties.agent.agreementSignature %>
+    </div>
     <div><b>Name</b><%= parties.agent.name %></div>
     <div><b>NRIC No.</b><%= parties.agent.identity %></div>
     <div><b>Date</b></div>
@@ -91,16 +112,24 @@
 
 <u><b>ACCEPTED BY THE SAID VENDOR(S)</b></u>
 
-<div class="fool">
+<div class="seller-area">
   <div class="test">
-    <div><b>Signatures</b></div>
+    <div class="sign-parent">
+      <b>Signatures</b>
+      <% parties.sellers.forEach(function(seller, i){ %>
+        <%- seller.agreementSignature %>
+      <% }); %>
+    </div>
     <% parties.sellers.forEach(function(seller, i){ %>
       <div><b>Name <%= i+1 %></b><%= seller.name %></div>
       <div><b>NRIC No. <%= i+1 %></b><%= seller.identity %></div>
     <% }); %>
   </div>
   <div class="test">
-    <div><b>WITNESSED BY</b></div>
+    <div class="sign-parent">
+      <b>WITNESSED BY</b>
+      <%- parties.agent.agreementSignature %>
+    </div>
     <div><b>Name</b><%= parties.agent.name %></div>
     <div><b>NRIC No.</b><%= parties.agent.identity %></div>
     <div><b>Date</b></div>

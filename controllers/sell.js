@@ -7,6 +7,9 @@ const currency = require("../utils/currency");
 const config = require("../utils/config");
 const fetch = require("node-fetch");
 const fs = require("fs");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 var template = ejs.compile(
   fs.readFileSync(__dirname + "/../templates/sell.ejs", "utf8")
 );
@@ -25,31 +28,50 @@ sellRouter.post("/", async (request, response) => {
 });
 
 sellRouter.get("/:id", async (request, response) => {
+  const selection =
+    "-parties.authorizationSignature -parties.agreementSignature";
   const caseId = request.params.id;
-  const result = await Sell.findById(caseId);
+  const result = await Sell.findById(caseId).select(selection);
   if (!result) return response.status(404).json({ error: "Not found." });
   return response.json(result);
 });
 
-sellRouter.post("/:id/agreement/create", async (request, response) => {
+sellRouter.put(
+  "/:id/agreement/:pid/sign",
+  upload.any(),
+  async (request, response) => {
+    const caseId = request.params.id;
+    const partyId = request.params.pid;
+    const signature = request.files[0].buffer;
+    const sell = await Sell.findById(caseId);
+    if (!sell) return response.status(404).json({ error: "Not found." });
+
+    sell.parties.forEach((party, i) => {
+      if (partyId === party._id.toString())
+        sell.parties[i].agreementSignature = signature;
+    });
+
+    sell.save();
+    return response.status(204).send();
+  }
+);
+
+sellRouter.post("/:id/agreement/form", async (request, response) => {
   const caseId = request.params.id;
   const sell = await Sell.findById(caseId);
-
-  if (!sell) {
-    return response.status(404).json({ error: "Not found." });
-  }
+  if (!sell) return response.status(404).json({ error: "Not found." });
 
   const agreement = sell.agreement;
-
-  if (agreement.fileId) {
-    const result = await File.findById(agreement.fileId);
-    return response.type("application/pdf").send(result.data);
-  }
+  if (agreement.fileId)
+    return response.status(201).json({ _id: agreement.fileId });
 
   agreement.address = sell.address;
   agreement.parties = getParties(sell.parties);
   agreement.priceDigit = agreement.price.toLocaleString();
   agreement.priceWord = currency.toWords(agreement.price);
+
+  if (!getEligibility(agreement))
+    return response.status(400).json({ error: "Form has missing fields." });
 
   const pdfResult = await fetch(
     `${config.GOTENBERG_URL}/forms/chromium/convert/html`,
@@ -65,7 +87,7 @@ sellRouter.post("/:id/agreement/create", async (request, response) => {
   sell.agreement.fileId = file._id;
   sell.save();
 
-  return response.type("application/pdf").send(result);
+  return response.status(201).json({ _id: file._id });
 });
 
 // Extract the buyer, seller, agent in the case.
@@ -83,6 +105,25 @@ const getParties = (parties) => {
   }
 
   return result;
+};
+
+// Check if all required information are present.
+const getEligibility = (agreement) => {
+  if (!agreement.parties.agent.agreementSignature) return false;
+  for (var buyer of agreement.parties.buyers)
+    if (!buyer.agreementSignature) return false;
+  for (var seller of agreement.parties.sellers)
+    if (!seller.agreementSignature) return false;
+
+  return !(
+    agreement.caseNumber &&
+    agreement.price &&
+    agreement.deposit &&
+    agreement.depositType &&
+    agreement.parties.agent &&
+    agreement.parties.buyers.length > 0 &&
+    agreement.parties.sellers.length > 0
+  );
 };
 
 // Prepare FormData from .ejs template.

@@ -48,13 +48,13 @@ const structure = {
       type: String,
       enum: ["CHEQUE", "CASH"],
     },
-    conditions: [String],
+    condition: String,
   },
   authorization: {
     fileId: String,
     price: Number,
     period: Number,
-    conditions: [String],
+    condition: String,
   },
 };
 
